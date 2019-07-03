@@ -1,6 +1,6 @@
 {
-  "name": "b-ioc",
-  "version": "1.2.0",
+  "name": "b-ioc-js",
+  "version": "2.0.0",
   "description": "A magic free, dirt simple IoC container for Javascript.",
   "main": "src/index.js",
   "directories": {
@@ -40,8 +40,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/brandonjpierce/b-ioc.git"
+    "url": "git://github.com/kmalakoff/b-ioc.git"
   },
-  "homepage": "https://github.com/brandonjpierce/b-ioc",
+  "homepage": "https://github.com/kmalakoff/b-ioc",
   "license": "MIT"
 }
