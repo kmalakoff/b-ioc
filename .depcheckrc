@@ -1,1 +1,1 @@
-ignores: ["depcheck", "tsd-jsdoc"]
+ignores: ["depcheck", "tsd-jsdoc", "jsdoc"]

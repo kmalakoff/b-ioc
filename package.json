@@ -29,10 +29,12 @@
     "lib"
   ],
   "scripts": {
-    "build": "jsdoc -t ./node_modules/tsd-jsdoc/dist -r lib -d . && mv types.d.ts lib/index.d.ts",
+    "build": "",
     "docs:api": "jsdoc2md --files lib/**/*.js > api.md",
     "docs:build": "npm run docs:api && retype init && retype build",
     "docs:watch": "npm run docs:api && retype watch",
+    "format": "",
+    "lint": "",
     "prepublishOnly": "npm run build && npm test",
     "test": "tape test/index.js",
     "test:engines": "nvu engines npm test"
