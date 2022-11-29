@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "jsdoc": "^3.6.11",
-    "jsdoc-to-markdown": "^7.1.1",
+    "jsdoc-to-markdown": "^8.0.0",
     "retypeapp": "^2.4.0",
     "tape": "^5.5.3",
     "tsd-jsdoc": "^2.5.0"
