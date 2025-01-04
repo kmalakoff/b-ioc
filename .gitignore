@@ -1,5 +1,8 @@
-node_modules
-npm-debug
+.DS_Store
+node_modules/
+dist/
+docs/
+npm-debug.log
 _book
 .todo
 .nyc_output/
