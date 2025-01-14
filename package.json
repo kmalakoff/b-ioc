@@ -39,10 +39,10 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.10.5",
-    "@types/tape": "^5.8.0",
+    "@types/node": "^22.10.6",
+    "@types/tape": "^5.8.1",
     "tape": "^5.9.0",
-    "ts-swc-loaders": "^1.12.1"
+    "ts-swc-loaders": "^1.12.6"
   },
   "engines": {
     "node": ">=0.8"
