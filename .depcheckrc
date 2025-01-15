@@ -1,1 +1,1 @@
-ignores: ["b-ioc-js", "@types/*", "@biomejs/*", "ts-swc-loaders"]
+ignores: ["b-ioc-js", "ts-swc-loaders", "@types/tape"]

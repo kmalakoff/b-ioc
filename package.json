@@ -37,12 +37,11 @@
     "version": "tsds version"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^22.10.6",
-    "@types/tape": "^5.8.1",
-    "tape": "^5.9.0",
-    "ts-swc-loaders": "^1.12.6"
+    "@types/mocha": "*",
+    "@types/node": "*",
+    "@types/tape": "*",
+    "tape": "*",
+    "ts-swc-loaders": "*"
   },
   "engines": {
     "node": ">=0.8"
