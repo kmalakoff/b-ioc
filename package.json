@@ -1,6 +1,6 @@
 {
   "name": "b-ioc-js",
-  "version": "2.1.13",
+  "version": "2.1.14",
   "description": "A magic free, dirt simple IoC container for Javascript.",
   "keywords": [
     "require",
