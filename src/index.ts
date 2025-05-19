@@ -30,34 +30,34 @@ function inObject(key, obj) {
  * Gets all of the current bindings in the container
  * @return {Object} The containers bindings
  */
-exports.getBindings = function getBindings() {
+export function getBindings() {
   return bindings;
-};
+}
 
 /**
  * Gets all of the current singletons in the container
  * @return {Object} The containers singletons
  */
-exports.getSingletons = function getSingletons() {
+export function getSingletons() {
   return singletons;
-};
+}
 
 /**
  * Resets container to default state
  */
-exports.clear = function clear() {
+export function clear() {
   bindings = {};
   resolvedBindings = {};
   singletons = {};
   resolvedSingletons = {};
-};
+}
 
 /**
  * Assigns to our bindings object
  * @param  {String} binding The name of the IoC binding
  * @param  {any} closure Factory method or value to bind to container
  */
-exports.bind = function bind(binding, closure) {
+export function bind(binding, closure) {
   if (inObject(binding, bindings) || inObject(binding, singletons)) {
     throw new Error(`Binding: ${binding} already binded.`);
   }
@@ -67,20 +67,20 @@ exports.bind = function bind(binding, closure) {
   }
 
   bindings[binding] = closure;
-};
+}
 
 /**
  * Assigns to our singleton object
  * @param  {String} binding The name of the IoC binding
  * @param  {any} closure Factory method or value to bind to container
  */
-exports.singleton = function singleton(binding, closure) {
+export function singleton(binding, closure) {
   if (inObject(binding, singletons) || inObject(binding, bindings)) {
     throw new Error(`Singleton: ${binding} already binded.`);
   }
 
   singletons[binding] = closure;
-};
+}
 
 /**
  * Grabs a binding from the IoC. Leverages node require as a fallback
@@ -88,7 +88,7 @@ exports.singleton = function singleton(binding, closure) {
  * @param  {String} binding The name of the binding in the container
  * @returns {A} The instance of the binding
  */
-exports.use = function use(binding) {
+export function use(binding) {
   // biome-ignore lint/style/noArguments: <explanation>
   const args = Array.prototype.slice.call(arguments, 1);
 
@@ -123,7 +123,7 @@ exports.use = function use(binding) {
 
   // finally check node_modules
   throw new Error(`Binding: ${binding} not found.`);
-};
+}
 
 /**
  * Creates an instance of a class and will inject dependencies defined in static
@@ -131,13 +131,13 @@ exports.use = function use(binding) {
  * @param  {function} Obj The class you wish to create a new instance of
  * @return {Object} The instantiated function instance
  */
-exports.make = function make(Obj) {
+export function make(Obj) {
   if (!isFunction(Obj)) {
-    throw new Error(`.make implementation error, expected function got: ${typeof obj}`);
+    throw new Error(`.make implementation error, expected function got: ${typeof Obj}`);
   }
 
   if (!Obj.inject) {
-    throw new Error(`.make requires ${obj.constructor.name} to have a static inject method.`);
+    throw new Error(`.make requires ${Obj.constructor.name} to have a static inject method.`);
   }
 
   const dependencies = Obj.inject();
@@ -165,4 +165,4 @@ exports.make = function make(Obj) {
     return new (Function.prototype.bind.apply(Obj, [null].concat(resolved)))();
   }
   return new Obj();
-};
+}
