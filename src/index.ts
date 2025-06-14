@@ -3,9 +3,12 @@
  * @module b-ioc-js
  */
 
-let bindings = {};
+export * from './types.js';
+import type { Bindings, ClassHelper, Factory, Singletons } from './types.js';
+
+let bindings: Bindings = {};
 let resolvedBindings = {};
-let singletons = {};
+let singletons: Singletons = {};
 let resolvedSingletons = {};
 
 function isString(obj) {
@@ -28,24 +31,24 @@ function inObject(key, obj) {
 
 /**
  * Gets all of the current bindings in the container
- * @return {Object} The containers bindings
+ * @return {Bindings} The containers bindings
  */
-export function getBindings() {
+export function getBindings(): Bindings {
   return bindings;
 }
 
 /**
  * Gets all of the current singletons in the container
- * @return {Object} The containers singletons
+ * @return {Singletons} The containers singletons
  */
-export function getSingletons() {
+export function getSingletons(): Singletons {
   return singletons;
 }
 
 /**
  * Resets container to default state
  */
-export function clear() {
+export function clear(): void {
   bindings = {};
   resolvedBindings = {};
   singletons = {};
@@ -54,41 +57,34 @@ export function clear() {
 
 /**
  * Assigns to our bindings object
+ * @template T
  * @param  {String} binding The name of the IoC binding
- * @param  {any} closure Factory method or value to bind to container
+ * @param  {Factory<T> | T} closure Factory method or value to bind to container
  */
-export function bind(binding, closure) {
-  if (inObject(binding, bindings) || inObject(binding, singletons)) {
-    throw new Error(`Binding: ${binding} already binded.`);
-  }
-
-  if (!isFunction(closure)) {
-    throw new Error(`Binding: ${binding} does not implement a factory.`);
-  }
-
+export function bind<T>(binding: string, closure: Factory<T> | T) {
+  if (inObject(binding, bindings) || inObject(binding, singletons)) throw new Error(`Binding: ${binding} already binded.`);
+  if (!isFunction(closure)) throw new Error(`Binding: ${binding} does not implement a factory.`);
   bindings[binding] = closure;
 }
 
 /**
  * Assigns to our singleton object
+ * @template T
  * @param  {String} binding The name of the IoC binding
- * @param  {any} closure Factory method or value to bind to container
+ * @param  {Factory<T> | T} closure Factory method or value to bind to container
  */
-export function singleton(binding, closure) {
-  if (inObject(binding, singletons) || inObject(binding, bindings)) {
-    throw new Error(`Singleton: ${binding} already binded.`);
-  }
-
+export function singleton<T>(binding: string, closure: Factory<T> | T) {
+  if (inObject(binding, singletons) || inObject(binding, bindings)) throw new Error(`Singleton: ${binding} already binded.`);
   singletons[binding] = closure;
 }
 
 /**
  * Grabs a binding from the IoC. Leverages node require as a fallback
- * @template A
+ * @template T
  * @param  {String} binding The name of the binding in the container
- * @returns {A} The instance of the binding
+ * @returns {T} The instance of the binding
  */
-export function use(binding) {
+export function use<T>(binding: string): T {
   // biome-ignore lint/style/noArguments: <explanation>
   const args = Array.prototype.slice.call(arguments, 1);
 
@@ -100,7 +96,7 @@ export function use(binding) {
 
     resolvedBindings[binding] = true;
 
-    const instance = bindings[binding].apply(null, args);
+    const instance = (bindings[binding] as Factory<T>).apply(null, args);
 
     resolvedBindings[binding] = false;
 
@@ -111,11 +107,8 @@ export function use(binding) {
   if (inObject(binding, singletons)) {
     if (!inObject(binding, resolvedSingletons)) {
       // we are not guarenteed to receive a factory function for a singleton
-      if (isFunction(singletons[binding])) {
-        resolvedSingletons[binding] = singletons[binding].apply(null, args);
-      } else {
-        resolvedSingletons[binding] = singletons[binding];
-      }
+      if (isFunction(singletons[binding])) resolvedSingletons[binding] = (singletons[binding] as Factory<T>).apply(null, args);
+      else resolvedSingletons[binding] = singletons[binding];
     }
 
     return resolvedSingletons[binding];
@@ -128,41 +121,32 @@ export function use(binding) {
 /**
  * Creates an instance of a class and will inject dependencies defined in static
  * inject method. This is an alternative to using Ioc.bind
- * @param  {function} Obj The class you wish to create a new instance of
- * @return {Object} The instantiated function instance
+ * @template T
+ * @param  {T} Obj The class you wish to create a new instance of
+ * @return {T} The instantiated function instance
  */
-export function make(Obj) {
-  if (!isFunction(Obj)) {
-    throw new Error(`.make implementation error, expected function got: ${typeof Obj}`);
-  }
+export function make<T>(Obj: new () => T): T {
+  if (!isFunction(Obj)) throw new Error(`.make implementation error, expected function got: ${typeof Obj}`);
 
-  if (!Obj.inject) {
-    throw new Error(`.make requires ${Obj.constructor.name} to have a static inject method.`);
-  }
+  if (!(Obj as unknown as ClassHelper).inject) throw new Error(`.make requires ${Obj.constructor.name} to have a static inject method.`);
+  const dependencies = (Obj as unknown as ClassHelper).inject();
+  if (dependencies.length === 0) return new Obj();
 
-  const dependencies = Obj.inject();
+  const resolved = [];
+  dependencies.forEach((dependency) => {
+    if (!isString(dependency) && !isObject(dependency)) {
+      throw new Error('static .inject implementation error, a string or object is required.');
+    }
 
-  if (dependencies.length) {
-    const resolved = [];
+    // string based binding
+    if (isString(dependency)) resolved.push(exports.use(dependency));
 
-    dependencies.forEach((dependency) => {
-      if (!isString(dependency) && !isObject(dependency)) {
-        throw new Error('static .inject implementation error, a string or object is required.');
-      }
+    // binding you want to pass args to
+    if (isObject(dependency)) {
+      dependency.args.unshift(dependency.key);
+      resolved.push(exports.use.apply(null, dependency.args));
+    }
+  });
 
-      // string based binding
-      if (isString(dependency)) {
-        resolved.push(exports.use(dependency));
-      }
-
-      // binding you want to pass args to
-      if (isObject(dependency)) {
-        dependency.args.unshift(dependency.key);
-        resolved.push(exports.use.apply(null, dependency.args));
-      }
-    });
-
-    return new (Function.prototype.bind.apply(Obj, [null].concat(resolved)))();
-  }
-  return new Obj();
+  return new (Function.prototype.bind.apply(Obj, [null].concat(resolved)))();
 }
