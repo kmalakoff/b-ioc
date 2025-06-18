@@ -39,7 +39,7 @@
   ],
   "scripts": {
     "build": "tsds build",
-    "format": "biome check --write --unsafe src/ test/",
+    "format": "biome check --write --unsafe",
     "test": "tsds link && ts-swc tape test/**/*.test.cjs && tsds unlink",
     "test:engines": "nvu engines npm test",
     "version": "tsds version"

@@ -72,7 +72,7 @@ test('IoC resolves local bindings', (t) => {
 test('IoC resolves local singletons (factory method)', (t) => {
   Ioc.clear();
 
-  Ioc.singleton('timer', () => new Date().getTime());
+  Ioc.singleton('timer', () => Date.now());
 
   const timer = Ioc.use('timer');
   const timer2 = Ioc.use('timer');

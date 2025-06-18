@@ -4,6 +4,7 @@
  */
 
 export * from './types.js';
+
 import type { Bindings, ClassHelper, Factory, Singletons } from './types.js';
 
 let bindings: Bindings = {};
@@ -25,7 +26,7 @@ function isFunction(obj) {
 }
 
 function inObject(key, obj) {
-  // biome-ignore lint/suspicious/noPrototypeBuiltins: <explanation>
+  // biome-ignore lint/suspicious/noPrototypeBuiltins: Legacy
   return obj.hasOwnProperty(key);
 }
 
@@ -85,7 +86,7 @@ export function singleton<T>(binding: string, closure: Factory<T> | T) {
  * @returns {T} The instance of the binding
  */
 export function use<T>(binding: string): T {
-  // biome-ignore lint/style/noArguments: <explanation>
+  // biome-ignore lint/complexity/noArguments: Apply arguments
   const args = Array.prototype.slice.call(arguments, 1);
 
   // first check bindings
