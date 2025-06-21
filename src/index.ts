@@ -3,9 +3,9 @@
  * @module b-ioc-js
  */
 
-export * from './types.js';
+export * from './types.ts';
 
-import type { Bindings, ClassHelper, Factory, Singletons } from './types.js';
+import type { Bindings, ClassHelper, Factory, Singletons } from './types.ts';
 
 let bindings: Bindings = {};
 let resolvedBindings = {};
