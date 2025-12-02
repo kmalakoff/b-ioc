@@ -40,15 +40,19 @@
   "scripts": {
     "build": "tsds build",
     "format": "biome check --write --unsafe",
+    "prepublishOnly": "tsds validate",
     "test": "tsds link && ts-swc tape test/**/*.test.cjs && tsds unlink",
     "test:engines": "nvu engines npm test",
     "version": "tsds version"
   },
   "devDependencies": {
+    "@biomejs/biome": "*",
     "@types/mocha": "*",
     "@types/node": "*",
     "@types/tape": "*",
+    "node-version-use": "*",
     "tape": "*",
+    "ts-dev-stack": "*",
     "ts-swc-loaders": "*"
   },
   "engines": {
