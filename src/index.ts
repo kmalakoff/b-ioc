@@ -8,26 +8,26 @@ export * from './types.ts';
 import type { Bindings, ClassHelper, Factory, Singletons } from './types.ts';
 
 let bindings: Bindings = {};
-let resolvedBindings = {};
+let resolvedBindings: Record<string, unknown> = {};
 let singletons: Singletons = {};
-let resolvedSingletons = {};
+let resolvedSingletons: Record<string, unknown> = {};
 
-function isString(obj) {
+function isString(obj: unknown): boolean {
   return Object.prototype.toString.call(obj) === '[object String]';
 }
 
-function isObject(obj) {
+function isObject(obj: unknown): boolean {
   const type = typeof obj;
   return type === 'function' || (type === 'object' && !!obj);
 }
 
-function isFunction(obj) {
+function isFunction(obj: unknown): boolean {
   return typeof obj === 'function' || false;
 }
 
-function inObject(key, obj) {
+function inObject(key: string, obj: unknown): boolean {
   // biome-ignore lint/suspicious/noPrototypeBuiltins: Legacy
-  return obj.hasOwnProperty(key);
+  return (obj as Record<string, unknown>).hasOwnProperty(key);
 }
 
 /**
@@ -97,7 +97,7 @@ export function use<T>(binding: string): T {
 
     resolvedBindings[binding] = true;
 
-    const instance = (bindings[binding] as Factory<T>).apply(null, args);
+    const instance = (bindings[binding] as (...args: unknown[]) => T).apply(null, args);
 
     resolvedBindings[binding] = false;
 
@@ -108,11 +108,11 @@ export function use<T>(binding: string): T {
   if (inObject(binding, singletons)) {
     if (!inObject(binding, resolvedSingletons)) {
       // we are not guarenteed to receive a factory function for a singleton
-      if (isFunction(singletons[binding])) resolvedSingletons[binding] = (singletons[binding] as Factory<T>).apply(null, args);
+      if (isFunction(singletons[binding])) resolvedSingletons[binding] = (singletons[binding] as (...args: unknown[]) => T).apply(null, args);
       else resolvedSingletons[binding] = singletons[binding];
     }
 
-    return resolvedSingletons[binding];
+    return resolvedSingletons[binding] as T;
   }
 
   // finally check node_modules
@@ -133,7 +133,7 @@ export function make<T>(Obj: new () => T): T {
   const dependencies = (Obj as unknown as ClassHelper).inject();
   if (dependencies.length === 0) return new Obj();
 
-  const resolved = [];
+  const resolved: unknown[] = [];
   dependencies.forEach((dependency) => {
     if (!isString(dependency) && !isObject(dependency)) {
       throw new Error('static .inject implementation error, a string or object is required.');
@@ -149,5 +149,5 @@ export function make<T>(Obj: new () => T): T {
     }
   });
 
-  return new (Function.prototype.bind.apply(Obj, [null].concat(resolved)))();
+  return new (Obj as new (...args: unknown[]) => T)(...resolved);
 }

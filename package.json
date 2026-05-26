@@ -47,14 +47,14 @@
     "version": "tsds version"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^25.0.1",
+    "@types/mocha": "*",
+    "@types/node": "*",
     "@types/tape": "^5.8.1",
-    "node-version-use": "^2.1.5",
+    "node-version-use": "*",
     "tape": "^5.9.0",
-    "ts-dev-stack": "^1.21.3",
-    "ts-swc-loaders": "^2.5.3",
-    "tsds-config": "^0.2.1"
+    "ts-dev-stack": "*",
+    "ts-swc-loaders": "^2.5.4",
+    "tsds-config": "*"
   },
   "engines": {
     "node": ">=0.8"
