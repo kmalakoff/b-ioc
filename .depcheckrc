@@ -1,1 +1,1 @@
-ignores: ["node-version-use", "ts-dev-stack", "@biomejs/biome", "b-ioc-js", "ts-swc-loaders", "@types/tape"]
+ignores: ["node-version-use", "ts-dev-stack", "b-ioc-js", "ts-swc-loaders", "@types/tape"]
