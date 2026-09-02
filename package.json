@@ -7,6 +7,9 @@
     "example": "example",
     "test": "test"
   },
+  "engines": {
+    "node": ">=4"
+  },
   "keywords": [
     "require",
     "dependency",
@@ -14,7 +17,9 @@
     "di",
     "dependency injection",
     "ioc",
-    "inversion of control"
+    "inversion of control",
+    "ts",
+    "typescript"
   ],
   "devDependencies": {
     "@randomgoods/tap-spec": "^5.0.1",
