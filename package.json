@@ -42,7 +42,7 @@
     "build": "tsds build",
     "format": "tsds format",
     "prepublishOnly": "tsds validate",
-    "test": "tsds link && ts-swc tape test/**/*.test.cjs && tsds unlink",
+    "test": "tsds link && ts-swc tape test/index.test.cjs && tsds unlink && tsds test:node --no-timeouts test/exports/**/*.test.*",
     "test:engines": "nvu engines npm test",
     "version": "tsds version"
   },
@@ -58,5 +58,9 @@
   },
   "engines": {
     "node": ">=0.8"
+  },
+  "allowScripts": {
+    "core-js-pure": true,
+    "@swc/core": true
   }
 }
