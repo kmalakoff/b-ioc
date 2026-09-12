@@ -1,39 +1,39 @@
-# [b-ioc](http://brandonjpierce.github.io/b-ioc/)
+# b-ioc-js
 
-b-ioc is a tiny and magic free IoC container for Node. It helps you manage dependencies and facilitates an easy testing environment for your modules.
+A tiny, magic-free IoC container for Node.js. Bind factories by name, then resolve them where you need them.
 
-### Installation
+## Installation
 
+```sh
+npm install b-ioc-js
 ```
-npm install b-ioc --save
-```
 
-### Small Introduction
+## Usage
 
 ```js
-var Ioc = require('b-ioc');
+var Ioc = require('b-ioc-js');
 
-var ClassA = require('class-a');
-var ClassB = require('class-b');
-
-// binding the classes
-Ioc.bind('classA', function() {
-  return new ClassA();
+Ioc.clear();
+Ioc.bind('config', function() {
+  return { greeting: 'Hello' };
 });
 
-Ioc.bind('classB', function() {
-  // classB needs classA as a dependency
-  var classA = Ioc.use('classA');
-  return new ClassB(classA);
+Ioc.bind('greeter', function() {
+  var config = Ioc.use('config');
+  return { greet: function(name) {
+    return config.greeting + ', ' + name;
+  }};
 });
 
-// using the bindings
-var classB = Ioc.use('classB');
+console.log(Ioc.use('greeter').greet('Ada')); // Hello, Ada
 ```
 
-Be sure to consult the documentation for more examples and an in depth look at the API.
+`bind(name, factory)` resolves a new value each time. `singleton(name, factoryOrValue)` resolves a value once. `make(Class)` constructs a class using dependency names returned by its static `inject()` method. `clear()` resets the process-wide container.
 
-### Documentation
+Bindings must use unique names. The container does not inspect constructor parameters or automatically discover dependencies; factories and `inject()` provide them explicitly.
 
-* [Getting Started](https://github.com/kmalakoff/b-ioc/blob/master/README.md)
-* [Api](https://github.com/kmalakoff/b-ioc/blob/master/api.md)
+Node.js >= 0.8 is supported.
+
+## License
+
+MIT
